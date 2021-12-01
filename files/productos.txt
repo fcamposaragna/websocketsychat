@@ -1,0 +1,50 @@
+[
+  {
+    "nombre": "Bajo eléctrico",
+    "precio": "13000",
+    "thumbnail": "http://localhost:8080/1637163335919bajo.jpeg",
+    "id": 1
+  },
+  {
+    "nombre": "Guitarra eléctrica Roja",
+    "precio": "16000",
+    "thumbnail": "http://localhost:8080/1637163365262guitarraroja.jpeg",
+    "id": 3
+  },
+  {
+    "nombre": "Guitarra Acústica",
+    "precio": "10000",
+    "thumbnail": "http://localhost:8080/1637163383630guitarraacustica.jpeg",
+    "id": 4
+  },
+  {
+    "nombre": "Amplificador de Guitarra",
+    "precio": "9000",
+    "thumbnail": "http://localhost:8080/1637421477089amplificador_guitarra_marshall.jpeg",
+    "id": 5
+  },
+  {
+    "nombre": "Guitarra eléctrica Azul",
+    "precio": "15000",
+    "thumbnail": "http://localhost:8080/1637509930032guitarrachica.jpeg",
+    "id": 6
+  },
+  {
+    "nombre": "Cable para guitarra",
+    "precio": "900",
+    "thumbnail": "http://localhost:8080/1638226884195cable.jpeg",
+    "id": 7
+  },
+  {
+    "nombre": "Micrófono Shure",
+    "precio": "13000",
+    "thumbnail": "http://localhost:8080/1638228908528microfonoShure.jpeg",
+    "id": 8
+  },
+  {
+    "nombre": "Pedal overdrive",
+    "precio": "10000",
+    "thumbnail": "http://localhost:8080/1638367760958overdrive.jpeg",
+    "id": 9
+  }
+]
