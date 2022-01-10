@@ -4,7 +4,7 @@ import Contenedor from '../class/clase.js'
 const contenedor = new Contenedor()
 router.use(express.json())
 import upload from '../services/upload.js'
-import {io} from '../server.js'
+import {io} from '../app.js'
 
 //GET
 router.get('/', (req, res)=>{

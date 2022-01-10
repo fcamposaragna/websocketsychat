@@ -1,4 +1,8 @@
 import fs from 'fs'
+import __dirname from '../utils.js'
+
+const chatURL = __dirname+'/files/mensajes.txt'
+const contenedorURL = __dirname + '/files/productos.txt'
 
 
 // Nombre, precio, thumbnail, id
@@ -7,7 +11,7 @@ class Contenedor {
     async saveObject(objeto){
         
         try{
-            let data = await fs.promises.readFile("./files/productos.txt", 'utf-8')
+            let data = await fs.promises.readFile(contenedorURL, 'utf-8')
             let productos = JSON.parse(data)
             
             if (productos.some(x =>x.id === objeto.id)){
@@ -23,7 +27,7 @@ class Contenedor {
                 productos.push(productoCreado)
 
                 try{
-                    await fs.promises.writeFile("./files/productos.txt", JSON.stringify(productos, null, 2))
+                    await fs.promises.writeFile(contenedorURL, JSON.stringify(productos, null, 2))
                     
                     return {status: "success", message: `Producto creado con id: ${productoCreado.id}`}
                 }
@@ -43,7 +47,7 @@ class Contenedor {
                 id: 1
             }
             try{
-                await fs.promises.writeFile("./files/productos.txt", JSON.stringify([productoCreado], null, 2))
+                await fs.promises.writeFile(contenedorURL, JSON.stringify([productoCreado], null, 2))
                 
                 return {status: "succes", message:`Producto creado con id: ${productoCreado.id}`}
             }
@@ -72,9 +76,8 @@ class Contenedor {
 
     async getAll(){
         try{
-            let data = await fs.promises.readFile("./files/productos.txt", 'utf-8')
+            let data = await fs.promises.readFile(contenedorURL, 'utf-8')
             let productos = JSON.parse(data)
-        //console.log(productos)
             return {status: "succes", productos}
         }
         catch{
@@ -84,7 +87,7 @@ class Contenedor {
 
     async deleteById(num){    
         try{
-            let data = await fs.promises.readFile("./files/productos.txt", 'utf-8')
+            let data = await fs.promises.readFile(contenedorURL, 'utf-8')
             let productos = JSON.parse(data)
             let producto = productos.some(x =>x.id === num)            
             let find = productos.findIndex(producto => producto.id === num)  
@@ -153,12 +156,11 @@ class Contenedor {
     async chatEnviar(mensaje){
         try{
             
-            let data = await fs.promises.readFile('./files/mensajes.txt', 'utf-8')
+            let data = await fs.promises.readFile(chatURL, 'utf-8')
             let mensajes = JSON.parse(data)
-            
             mensajes.push(mensaje)
             try{
-                await fs.promises.writeFile('./files/mensajes.txt', JSON.stringify(mensajes, null, 2))
+                await fs.promises.writeFile(chatURL, JSON.stringify(mensajes, null, 2))
                 return {status:"success", message:mensajes}
             }
             catch{
@@ -173,7 +175,7 @@ class Contenedor {
     
     async getchat(){
         try{
-        let data = await fs.promises.readFile('./files/mensajes.txt')
+        let data = await fs.promises.readFile(chatURL)
         let mensajes = JSON.parse(data)
         return {status:"success", mensajes}
         }

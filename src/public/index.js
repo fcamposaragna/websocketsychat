@@ -1,6 +1,6 @@
 const socket = io()
 
-//------------------------------------------------------------------
+
 //Vista de productos
 socket.on('vistaProductos', data=>{
     
@@ -15,33 +15,35 @@ socket.on('vistaProductos', data=>{
         div.innerHTML=html
     })
 })
-//-------------------------------------------------------------
+
+
 //chat
 
-let user = document.getElementById('user')
-let input = document.getElementById('mensaje')
+const email = document.getElementById('email')
+const nombre = document.getElementById('nombre')
+const apellido = document.getElementById('apellido')
+const edad = document.getElementById('edad')
+const alias = document.getElementById('alias')
+const input = document.getElementById('mensaje')
+const avatar = document.getElementById('avatar')
 
 function miFunc(){
-    let date = new Date()
-    let dia =  date.getDay()
-    let mes = date.getMonth()
-    let año = date.getFullYear()
-    let hora = date.getHours()
-    let minuto = date.getMinutes()
-    let segundo = date.getSeconds()
-    
-    let formato = `[${dia}/${mes}/${año} ${hora}:${minuto}:${segundo}]`
-    
     let preparedObject = {
-        user: user.value,
-        hora: formato,
-        message: input.value
+        athor:{
+            id: email.value,
+            nombre: nombre.value,
+            apellido: apellido.value,
+            edad: edad.value,
+            alias: alias.value,
+            avatar: avatar.value,
+        },
+        text: input.value
     }
+    console.log(preparedObject)
     socket.emit('mensajeEnviado', preparedObject)
 }      
    
 socket.on('chat', data=>{
-    console.log(data)
     let p= document.getElementById('log')
     let mensajes = data.mensajes.map(message=>{
     return `<div><span><b style="color:blue;">${message.user}</b> ${message.hora} dice: <i style="color:green;">${message.message}</i></span></div>`

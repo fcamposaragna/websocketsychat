@@ -8,6 +8,8 @@ import productosRouter from './routes/productos.js'
 import {engine} from 'express-handlebars'
 import upload from './services/upload.js'
 import {Server} from 'socket.io'
+import __dirname from './utils.js';
+import { productsFaker } from './faker.js';
 
 const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
@@ -16,10 +18,10 @@ export const io = new Server(server)
 
 
 app.engine('handlebars', engine())
-app.set('views', './views')
+app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
-app.use(express.static('public'))
+app.use(express.static(__dirname+'/public'))
 app.use('/api/productos', productosRouter)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
@@ -28,12 +30,13 @@ app.use(upload.single('files'))
 
 app.get('/productos', (req, res)=>{
     contenedor.getAll().then(result=>{
-        let info = result
-        // let preparedObject = {
-        //     productos : info
-        // }        
+        let info = result     
         res.render('products', info)
     })
+})
+
+app.get('/api/productos-test', (req, res)=>{
+    res.render('productsRandom', productsFaker())
 })
 
 

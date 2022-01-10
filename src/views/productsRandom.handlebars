@@ -1,0 +1,12 @@
+<input type="button" onclick="location.href='/'" value="Volver al inicio">
+
+<h1>Productos Random</h1>
+<div class="product-container">
+    {{#each products}}
+    <div class="product-card">
+        <h4>{{this.nombre}}</h4>
+        <img src={{this.thumbnail}}>
+        <p id="precio-producto">Precio: ${{this.precio}}</p>
+    </div>
+    {{/each}}
+</div>
