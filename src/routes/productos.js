@@ -15,7 +15,6 @@ router.get('/', (req, res)=>{
 
 router.get('/:id', (req, res)=>{
     let id = parseInt(req.params.id)
-    console.log(id)
     contenedor.getById(id).then(result =>{
         res.send(result)
     })
@@ -24,7 +23,6 @@ router.get('/:id', (req, res)=>{
 //POST
 router.post('/', upload.single('imagen'), (req, res)=>{
     let product = req.body
-    console.log(product)
     let file = req.file
     product.thumbnail = 'http://localhost:8080/' + file.filename
     console.log(file)    

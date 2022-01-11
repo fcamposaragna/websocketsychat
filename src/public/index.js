@@ -20,7 +20,7 @@ socket.on('vistaProductos', data=>{
 //chat
 
 const email = document.getElementById('email')
-const nombre = document.getElementById('nombre')
+const first = document.getElementById('Nombre')
 const apellido = document.getElementById('apellido')
 const edad = document.getElementById('edad')
 const alias = document.getElementById('alias')
@@ -31,7 +31,7 @@ function miFunc(){
     let preparedObject = {
         athor:{
             id: email.value,
-            nombre: nombre.value,
+            nombre: first.value,
             apellido: apellido.value,
             edad: edad.value,
             alias: alias.value,
@@ -62,11 +62,9 @@ socket.on('messagelog', data=>{
 //------------------------------------------------------------------
 //submit de producto
 document.addEventListener('submit', event=>{
-    event.preventDefault()//Se evita que se refresque la página
+    event.preventDefault()
     let form = document.querySelector('#productForm')
-    let data = new FormData(form)//Con esto se envía la informacion al back
-   
-    
+    let data = new FormData(form)
     fetch('http://localhost:8080/api/productos',{
         method: 'POST',
         body: data
