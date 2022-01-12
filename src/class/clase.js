@@ -1,13 +1,10 @@
 import fs from 'fs'
 import __dirname from '../utils.js'
-
+import mongoose from 'mongoose'
 const chatURL = __dirname+'/files/mensajes.txt'
 const contenedorURL = __dirname + '/files/productos.txt'
 
-
-// Nombre, precio, thumbnail, id
 class Contenedor {
-    
     async saveObject(objeto){
         
         try{
@@ -168,8 +165,8 @@ class Contenedor {
             }
             
         }
-        catch{
-            return {status:"error", message:"Hubo un error en el chat"}
+        catch(error){
+            return {status:"error", message:"Hubo un error en el chat" + error}
         }
     }
     

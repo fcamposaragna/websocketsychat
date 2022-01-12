@@ -3,7 +3,6 @@ const socket = io()
 
 //Vista de productos
 socket.on('vistaProductos', data=>{
-    
     let products = data.productos
     fetch('templates/tablaProductos.handlebars').then(string=>string.text()).then(template=>{
         const processedTemplate = Handlebars.compile(template)
@@ -18,7 +17,6 @@ socket.on('vistaProductos', data=>{
 
 
 //chat
-
 const email = document.getElementById('email')
 const first = document.getElementById('Nombre')
 const apellido = document.getElementById('apellido')
@@ -29,7 +27,7 @@ const avatar = document.getElementById('avatar')
 
 function miFunc(){
     let preparedObject = {
-        athor:{
+        author:{
             id: email.value,
             nombre: first.value,
             apellido: apellido.value,
@@ -45,16 +43,17 @@ function miFunc(){
    
 socket.on('chat', data=>{
     let p= document.getElementById('log')
-    let mensajes = data.mensajes.map(message=>{
-    return `<div><span><b style="color:blue;">${message.user}</b> ${message.hora} dice: <i style="color:green;">${message.message}</i></span></div>`
+    console.log(data)
+    let mensajes = data.payload.map(message=>{
+    return `<div><span><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
     p.innerHTML = mensajes
 })
 
 socket.on('messagelog', data=>{
     let p= document.getElementById('log')
-    let mensajes = data.map(message=>{
-    return `<div><span><b style="color:blue;">${message.user}</b> ${message.hora} dice: <i style="color:green;">${message.message}</i></span></div>`
+    let mensajes = data.payload.map(message=>{
+    return `<div><span><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
     p.innerHTML = mensajes
 })

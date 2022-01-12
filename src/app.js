@@ -10,6 +10,8 @@ import upload from './services/upload.js'
 import {Server} from 'socket.io'
 import __dirname from './utils.js';
 import { productsFaker } from './faker.js';
+import ContenedorChat from './class/chat.js'
+const chat = new ContenedorChat()
 
 const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
@@ -39,16 +41,15 @@ app.get('/api/productos-test', (req, res)=>{
     res.render('productsRandom', productsFaker())
 })
 
-
-
 io.on('connection', async socket=>{
     console.log(`El socket ${socket.id} está conectado`)
     let products = await contenedor.getAll()
-    let chat = await contenedor.getchat()
-    socket.emit('chat', chat)
+    let conversacion = await chat.getChat()
+    socket.emit('chat', conversacion)
     socket.emit('vistaProductos', products)
     socket.on('mensajeEnviado', data=>{
-        contenedor.chatEnviar(data).then(result=>{
+        chat.chatEnviar(data).then(result=>{
+            console.log(result)
             io.emit('messagelog', result.message)
         })
     })

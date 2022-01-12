@@ -6,6 +6,7 @@ router.use(express.json())
 import upload from '../services/upload.js'
 import {io} from '../app.js'
 
+
 //GET
 router.get('/', (req, res)=>{
     contenedor.getAll().then(result=>{
@@ -24,12 +25,10 @@ router.get('/:id', (req, res)=>{
 router.post('/', upload.single('imagen'), (req, res)=>{
     let product = req.body
     let file = req.file
-    product.thumbnail = 'http://localhost:8080/' + file.filename
-    console.log(file)    
+    product.thumbnail = 'http://localhost:8080/' + file.filename    
     contenedor.saveObject(product).then(result=>{
         res.send(result)
         contenedor.getAll().then(result=>{
-
             io.emit('vistaProductos', result)
         })
         })
