@@ -2,6 +2,10 @@ body{
     background-color: #00a8e8;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
+#imagen-chat{
+    max-width: 50px;
+    max-height: 50px;
+}
 .main-container{
     padding:20px 0;
 }

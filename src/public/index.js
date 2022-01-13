@@ -1,21 +1,5 @@
 const socket = io()
 
-
-//Vista de productos
-socket.on('vistaProductos', data=>{
-    let products = data.productos
-    fetch('templates/tablaProductos.handlebars').then(string=>string.text()).then(template=>{
-        const processedTemplate = Handlebars.compile(template)
-        const templateObject={
-            products
-        }
-        const html = processedTemplate(templateObject)
-        let div = document.getElementById('tablaProductos')
-        div.innerHTML=html
-    })
-})
-
-
 //chat
 const email = document.getElementById('email')
 const first = document.getElementById('Nombre')
@@ -45,7 +29,7 @@ socket.on('chat', data=>{
     let p= document.getElementById('log')
     console.log(data)
     let mensajes = data.payload.map(message=>{
-    return `<div><span><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
+    return `<div><span><img src="${message.author.avatar}" id='imagen-chat'><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
     p.innerHTML = mensajes
 })
@@ -53,23 +37,9 @@ socket.on('chat', data=>{
 socket.on('messagelog', data=>{
     let p= document.getElementById('log')
     let mensajes = data.payload.map(message=>{
-    return `<div><span><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
+    return `<div><span><img src='${message.author.avatar}' id='imagen-chat' ><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
     p.innerHTML = mensajes
 })
 
-//------------------------------------------------------------------
-//submit de producto
-document.addEventListener('submit', event=>{
-    event.preventDefault()
-    let form = document.querySelector('#productForm')
-    let data = new FormData(form)
-    fetch('http://localhost:8080/api/productos',{
-        method: 'POST',
-        body: data
-    }).then(result=>{
-        return result.json()
-    }).then(json=>{
-        console.log(json)
-    })
-})
+

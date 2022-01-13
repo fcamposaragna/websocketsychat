@@ -23,6 +23,16 @@ export default class ContenedorChat {
     getChat = async ()=>{
         try{
             let data = await this.collection.find()
+            console.log(data)
+            const user = new schema.Entity('user')
+            const author = new schema.Entity('author',{
+                author:user
+            })
+            const chat = new schema.Entity('chat',{
+                author:author
+            })
+            const normalizedData = normalize(data,chat)
+            console.log(JSON.stringify(normalizedData,null,2))
             return {status:"success", payload:data}
         }
         catch(error){

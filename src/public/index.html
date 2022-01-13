@@ -11,34 +11,9 @@
     <title>Productos</title>
 </head>
 <body>
-    <input type="button" onclick="location.href='/productos'" value="Ver productos">
+    <input type="button" onclick="location.href='/api/productos-test'" value="Ver productos random">
     <div class="main-container">
-        <div class="form-container">
-            <h2>Agregar producto</h2>
-            <form name="productForm" id="productForm">
-                <div class="form-floating form-input">
-                    <label for="nombre">Nombre del producto</label>
-                    <br>
-                    <input type="text" name="nombre" id="nombre">
-                </div>
-                <div class="form-floating form-input"> 
-                    <label for="precio">Precio del producto</label>
-                    <br>
-                    <input type="number" name="precio" id="precio">
-                </div>
-                <div class="form-floating form-input">
-                    <label for="imagen" name='imagen'>Subir imagen</label>
-                    <br>
-                    
-                    <input type="file" name="imagen" id="imagen">
-                    
-                </div>
-                <br>
-                <button type="submit">Subir producto</button>
-            </form>
-        </div>
-        <div id="tablaProductos">            
-        </div>
+        
         <div id="chat-contenedor">
             <h2>Centro de mensajes</h2>
             <hr>
