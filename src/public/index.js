@@ -21,13 +21,11 @@ function miFunc(){
         },
         text: input.value
     }
-    console.log(preparedObject)
     socket.emit('mensajeEnviado', preparedObject)
 }      
    
 socket.on('chat', data=>{
     let p= document.getElementById('log')
-    console.log(data)
     let mensajes = data.payload.map(message=>{
     return `<div><span><img src="${message.author.avatar}" id='imagen-chat'><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
@@ -36,10 +34,9 @@ socket.on('chat', data=>{
 
 socket.on('messagelog', data=>{
     let p= document.getElementById('log')
+    console.log(data)
     let mensajes = data.payload.map(message=>{
     return `<div><span><img src='${message.author.avatar}' id='imagen-chat' ><b style="color:blue;">${message.author.alias}</b> dice: <i style="color:green;">${message.text}</i></span></div>`
     }).join('')
     p.innerHTML = mensajes
 })
-
-

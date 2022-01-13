@@ -39,7 +39,7 @@ io.on('connection', async socket=>{
     socket.on('mensajeEnviado', data=>{
         chat.chatEnviar(data).then(result=>{
             console.log(result)
-            io.emit('messagelog', result.message)
+            io.emit('messagelog', result)
         })
     })
    

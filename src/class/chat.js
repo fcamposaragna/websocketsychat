@@ -24,15 +24,15 @@ export default class ContenedorChat {
         try{
             let data = await this.collection.find()
             console.log(data)
-            const user = new schema.Entity('user')
+            const users = new schema.Entity('users')
             const author = new schema.Entity('author',{
-                author:user
+                author:users
             })
             const chat = new schema.Entity('chat',{
-                author:author
+                chat:author
             })
             const normalizedData = normalize(data,chat)
-            console.log(JSON.stringify(normalizedData,null,2))
+            console.log(normalizedData)
             return {status:"success", payload:data}
         }
         catch(error){
@@ -42,7 +42,8 @@ export default class ContenedorChat {
     async chatEnviar(mensaje){
         try{
             await this.collection.create(mensaje)
-            return{status:"success"}
+            let data = await this.collection.find()
+            return{status:"success", payload:data}
         }
         catch(error){
             return {status:"error", message:"Hubo un error en el chat" + error}
