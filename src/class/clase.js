@@ -88,7 +88,7 @@ class Contenedor {
             let productos = JSON.parse(data)
             let producto = productos.some(x =>x.id === num)            
             let find = productos.findIndex(producto => producto.id === num)  
-            console.log(productos.splice(find, 1))
+            
             
             if (producto){
                 await fs.promises.writeFile('./files/productos.txt', JSON.stringify(productos, null, 2))

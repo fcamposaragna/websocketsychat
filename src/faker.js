@@ -9,6 +9,5 @@ export const productsFaker = ()=>{
             thumbnail : faker.image.image()
         })
     }
-    console.log(products)
     return {products}
 }
