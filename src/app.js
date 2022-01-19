@@ -1,7 +1,5 @@
 import express from 'express'
-const app = express();
 import cors from 'cors'
-const PORT = process.env.PORT || 8080;
 import productosRouter from './routes/productos.js'
 import {engine} from 'express-handlebars'
 import upload from './services/upload.js'
@@ -12,8 +10,11 @@ import UserService from './daos/users.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
-const User = new UserService()
 import MessageService from './daos/Messages.js';
+import { normalizedMessage } from './utils.js'
+const app = express();
+const PORT = process.env.PORT || 8080;
+const User = new UserService()
 const Message = new MessageService()
 
 
@@ -21,10 +22,11 @@ const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
 });
 const baseSession = (session({
-    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority'}),
+    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:60}),
     resave:false,
     saveUninitialized:false,
-    secret:'ch4at'
+    secret:'ch4t',
+    cookie:{maxAge:60000}
 }))
 export const io = new Server(server)
 io.use(ios(baseSession))
@@ -63,7 +65,7 @@ app.post('/login', async (req, res)=>{
        return res.status(404).send({error:"Usuario no encontrado"});
     } 
     if(user.payload.password!==password) {
-        return res.send({status:"error",error:"Contraseña incorrecta"})
+        return res.status(404).send({error:"Contraseña incorrecta"})
     };
     req.session.user={
         email: user.payload.email,
@@ -77,6 +79,7 @@ io.on('connection', async socket=>{
     console.log(`El socket ${socket.id} está conectado`)
     let conversacion = await Message.getMessages()
     socket.emit('chat', conversacion)
+    socket.emit('user', socket.handshake.session)
     socket.on('mensajeEnviado', async data=>{
         const user = await User.getUser(socket.handshake.session.user.email)
         let message = {
@@ -84,6 +87,9 @@ io.on('connection', async socket=>{
             text:data.message
         }
         await Message.sendMessage(message).then(result=>{
+            const objectToNormalize =  Message.getDataToNormalize();
+            const normalizedData = normalizedMessage(objectToNormalize);
+            //console.log(normalizedData)
             io.emit('messagelog', result)
         })
     })

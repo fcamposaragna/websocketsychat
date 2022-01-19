@@ -13,8 +13,12 @@ form.addEventListener('submit',function(event){
         headers:{
             'Content-Type':'application/json'
         }
-    }).then(result=>result.json()).then(json=>{
-        console.log(json);
-        location.replace('../pages/chat.html')
+    }).then(result=>{
+        if(result.status===404){
+            return window.alert('Usuario o contraseña inválidos')
+         }
+         else{
+             location.replace('../pages/chat.html')
+         }
     })
 })

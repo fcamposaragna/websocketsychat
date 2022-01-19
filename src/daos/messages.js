@@ -16,8 +16,9 @@ export default class MessageService extends ContenedorChat{
     }
     async sendMessage(message){
         try{
-            let data = await this.collection.create(message)
-            return{status:"success", payload:data}
+            await this.collection.create(message)
+            let messages = await this.collection.find().populate('author')
+            return{status:"success", payload:messages}
         }   
         catch(error){
             return {status:"error", message:"No se pudo enviar el mensaje" + error}
@@ -26,11 +27,24 @@ export default class MessageService extends ContenedorChat{
     async getMessages(){
         try{
             let data = await this.collection.find().populate('author')
-            console.log(data)
             return {status:"success", payload:data}
         }
         catch(error){
             return {status:"error", message:"Hubo un error al recuperar los mensajes" + error}
         }
+    }
+    async getDataToNormalize(){
+        let documents  = await this.collection.find().populate('author')
+        documents = documents.map(document=>{
+            document._id = document._id.toString();
+            document['author']['_id'] = document['author']['_id'].toString();
+            delete document.__v;
+            return document;
+        });
+        let object = {
+            id:"Messages",
+            messages:documents
+        }
+        return object;
     }
 }
