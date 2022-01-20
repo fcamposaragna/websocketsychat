@@ -1,8 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import productosRouter from './routes/productos.js'
 import {engine} from 'express-handlebars'
-import upload from './services/upload.js'
 import {Server} from 'socket.io'
 import __dirname from './utils.js';
 import { productsFaker } from './faker.js';
@@ -11,7 +9,6 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
 import MessageService from './daos/Messages.js';
-import { normalizedMessage } from './utils.js'
 const app = express();
 const PORT = process.env.PORT || 8080;
 const User = new UserService()
@@ -36,13 +33,13 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 app.use(express.static(__dirname+'/public'))
-app.use('/api/productos', productosRouter)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
 app.use(baseSession);
-app.use(upload.single('files'))
 
+
+//RUTAS
 app.get('/api/productos-test', (req, res)=>{
     res.render('productsRandom', productsFaker())
 })
@@ -71,15 +68,17 @@ app.post('/login', async (req, res)=>{
         email: user.payload.email,
         alias: user.payload.alias
     }
-    
     res.send({status:"logged"})
 })
+app.get('/pages/goodbye', (req, res)=>{
+    req.session.destroy()
+})
 
+//SOCKET
 io.on('connection', async socket=>{
     console.log(`El socket ${socket.id} está conectado`)
     let conversacion = await Message.getMessages()
     socket.emit('chat', conversacion)
-    socket.emit('user', socket.handshake.session)
     socket.on('mensajeEnviado', async data=>{
         const user = await User.getUser(socket.handshake.session.user.email)
         let message = {
@@ -87,9 +86,6 @@ io.on('connection', async socket=>{
             text:data.message
         }
         await Message.sendMessage(message).then(result=>{
-            const objectToNormalize =  Message.getDataToNormalize();
-            const normalizedData = normalizedMessage(objectToNormalize);
-            //console.log(normalizedData)
             io.emit('messagelog', result)
         })
     })

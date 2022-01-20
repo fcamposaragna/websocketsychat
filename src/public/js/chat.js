@@ -1,8 +1,10 @@
 const socket = io()
-
-let user;
-
-
+fetch('/currentUser').then(result=>result.json()).then(json=>{
+    let hi = document.getElementById("hi")
+    let user = json.alias
+    hi.innerHTML= `Hola ${user}`
+        
+})
 let input = document.getElementById('mensaje');
 input.addEventListener('keyup',(event)=>{
     if(event.key==="Enter"){
@@ -11,7 +13,7 @@ input.addEventListener('keyup',(event)=>{
                 socket.emit('mensajeEnviado',{message:event.target.value})
                 event.target.value="";
             }
-            user = json;
+            let user = json;
             console.log(user);
         }).catch(()=>{
             alert('Su sesión ha expirado')

@@ -35,15 +35,15 @@ export default class MessageService extends ContenedorChat{
     }
     async getDataToNormalize(){
         let documents  = await this.collection.find().populate('author')
-        documents = documents.map(document=>{
+        let formatedDocuments = documents.map(document=>{
             document._id = document._id.toString();
-            document['author']['_id'] = document['author']['_id'].toString();
+            document.author._id = document.author._id.toString();
             delete document.__v;
             return document;
         });
         let object = {
             id:"Messages",
-            messages:documents
+            messages:formatedDocuments
         }
         return object;
     }
