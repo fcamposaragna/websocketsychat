@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { normalize, schema } from 'normalizr'
 
 mongoose.connect("mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/chatbdd?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology:true})
 

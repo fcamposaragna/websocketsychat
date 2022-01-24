@@ -9,6 +9,8 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
 import MessageService from './daos/Messages.js';
+import initializePassportConfig from './passport-config.js';
+import passport from 'passport';
 const app = express();
 const PORT = process.env.PORT || 8080;
 const User = new UserService()
@@ -31,13 +33,15 @@ io.use(ios(baseSession))
 app.engine('handlebars', engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
+app.use(baseSession);
 
 app.use(express.static(__dirname+'/public'))
 app.use(express.json());
+initializePassportConfig();
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
-app.use(baseSession);
-
 
 //RUTAS
 app.get('/api/productos-test', (req, res)=>{
@@ -72,6 +76,15 @@ app.post('/login', async (req, res)=>{
 })
 app.get('/pages/goodbye', (req, res)=>{
     req.session.destroy()
+})
+
+app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email']}),(req,res)=>{
+
+})
+app.get('/auth/facebook/callback', passport.authenticate('facebook',{
+    failureRedirect:"/error"
+}),(req,res)=>{
+    res.send({message:"Logeado"})
 })
 
 //SOCKET

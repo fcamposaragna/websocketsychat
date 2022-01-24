@@ -22,6 +22,13 @@ input.addEventListener('keyup',(event)=>{
         
     }
 })
+function sendMessage(){
+    if(input.value){
+        fetch('/currentUser').then(result=>result.json()).then(json=>{
+            
+        })
+    }
+}
 // function miFunc(){
 //     const input = document.getElementById('mensaje')
 //     let text = input.ariaValueMax

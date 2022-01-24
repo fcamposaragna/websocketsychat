@@ -16,7 +16,7 @@ export default class UserService extends ContenedorChat{
     }
     async saveUser(data){
         try{
-            let file = await this.collection.create(data)
+            await this.collection.create(data)
             return{status:"success", message:"Usuario creado"}
         }
         catch(error){
@@ -26,7 +26,6 @@ export default class UserService extends ContenedorChat{
     async getUser(email){
         try{
             let user = await this.collection.findOne({email:email})
-            
             return {status:"success", payload:user}
         }
         catch(error){
