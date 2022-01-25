@@ -32,4 +32,14 @@ export default class UserService extends ContenedorChat{
             return {status:"error", message:"Hubo un error al obtener el usuario" + error}
         }
     }
+    async findById(id){
+        try{
+            let data = await this.collection.findById({_id:id})
+            console.log(data)
+            return {status:"success", payload:data}
+        }
+        catch(error){
+            return {status:"error", message:"no pudo recuperarse el ususario por id" + error}
+        }
+    }
 }

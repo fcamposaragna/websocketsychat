@@ -4,16 +4,15 @@ import {engine} from 'express-handlebars'
 import {Server} from 'socket.io'
 import __dirname from './utils.js';
 import { productsFaker } from './faker.js';
-import UserService from './daos/users.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
 import MessageService from './daos/Messages.js';
 import initializePassportConfig from './passport-config.js';
 import passport from 'passport';
+import { userService } from "./daos/index.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
-const User = new UserService()
 const Message = new MessageService()
 
 
@@ -21,11 +20,10 @@ const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
 });
 const baseSession = (session({
-    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:60}),
+    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:10}),
     resave:false,
     saveUninitialized:false,
     secret:'ch4t',
-    cookie:{maxAge:60000}
 }))
 export const io = new Server(server)
 io.use(ios(baseSession))
@@ -49,11 +47,15 @@ app.get('/api/productos-test', (req, res)=>{
 })
 
 app.get('/currentUser',(req,res)=>{
-    res.send(req.session.user)
+    if(req.session.user ===undefined){
+        res.send(req.user)
+    }else{
+        res.send(req.session.user)
+    }
 })
 app.post('/register', async (req, res)=>{
     let user = req.body
-    let result = await User.saveUser(user);
+    let result = await userService.saveUser(user);
     res.send({message:"Usuario creado", user:result})
 })
 app.post('/login', async (req, res)=>{
@@ -61,7 +63,7 @@ app.post('/login', async (req, res)=>{
     if(!email||!password){
         return res.status(400).send({error:"Datos incompletos"}
     )};
-    const user = await User.getUser(email);
+    const user = await userService.getUser(email);
     if(!user){
        return res.status(404).send({error:"Usuario no encontrado"});
     } 
@@ -83,8 +85,13 @@ app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email']}),(r
 })
 app.get('/auth/facebook/callback', passport.authenticate('facebook',{
     failureRedirect:"/error"
-}),(req,res)=>{
-    res.send({message:"Logeado"})
+}),async (req,res)=>{
+    res.render('profile',req.user)
+    //res.redirect('http://localhost:8080/pages/chat.html')
+})
+
+app.get('/profile',(req,res)=>{
+    //res.render('profile',req.user)
 })
 
 //SOCKET
@@ -93,7 +100,7 @@ io.on('connection', async socket=>{
     let conversacion = await Message.getMessages()
     socket.emit('chat', conversacion)
     socket.on('mensajeEnviado', async data=>{
-        const user = await User.getUser(socket.handshake.session.user.email)
+        const user = await userService.getUser(socket.handshake.session.user.email)
         let message = {
             author:user.payload._id,
             text:data.message
