@@ -108,28 +108,7 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook',{
         alias: user.payload.alias,
         avatar: user.payload.avatar
     }
-    //console.log(req.session.user + 'En el req.session del callback')
-// CON TOKEEEEEN
 
-    // const payload = {
-    //     email: user.payload.email,
-    //     alias: user.payload.alias,
-    //     avatar: user.payload.avatar
-    // }
-    // let token =jwt.sign(payload,key,{
-    //     expiresIn: '1h'
-    // })
-    // res.send({
-    //     message:'Logueado',
-    //     token:token
-    // })
-// CON COOOOOOKIES
-    // const payload = {
-    //     email: user.payload.email,
-    // //     alias: user.payload.alias,
-    // //     avatar: user.payload.avatar
-    // }
-    // res.cookie('cookieFb',payload)
     res.redirect('http://localhost:8080/profile')
 })
 app.get('/profile',(req,res)=>{
