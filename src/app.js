@@ -20,7 +20,7 @@ const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
 });
 const baseSession = (session({
-    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:10}),
+    store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:1000}),
     resave:false,
     saveUninitialized:false,
     secret:'ch4t',
@@ -33,11 +33,11 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 app.use(baseSession);
 
-app.use(express.static(__dirname+'/public'))
-app.use(express.json());
 initializePassportConfig();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static(__dirname+'/public'))
+app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
 
@@ -47,7 +47,8 @@ app.get('/api/productos-test', (req, res)=>{
 })
 
 app.get('/currentUser',(req,res)=>{
-    if(req.session.user ===undefined){
+    console.log(req)
+    if(req.user!==undefined){
         res.send(req.user)
     }else{
         res.send(req.session.user)
@@ -79,21 +80,28 @@ app.post('/login', async (req, res)=>{
 app.get('/pages/goodbye', (req, res)=>{
     req.session.destroy()
 })
-
 app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email']}),(req,res)=>{
 
 })
+
 app.get('/auth/facebook/callback', passport.authenticate('facebook',{
-    failureRedirect:"/error"
+    //session:true
 }),async (req,res)=>{
-    res.render('profile',req.user)
-    //res.redirect('http://localhost:8080/pages/chat.html')
+    console.log(req.user+ 'En el callback ')
+    const user = await userService.getUser(req.user.email)
+    req.session.user={
+        email: user.payload.email,
+        alias: user.payload.alias,
+        avatar: user.payload.avatar
+    }
+    console.log(req.session.user + 'En el req.session del callback')
+    res.redirect('http://localhost:8080/profile')
 })
-
 app.get('/profile',(req,res)=>{
-    //res.render('profile',req.user)
+    console.log(req.user + 'req.user en el /profile')
+    console.log(req.session.passport+'req.user.passport en el profile')
+    res.render('profile',req.user)
 })
-
 //SOCKET
 io.on('connection', async socket=>{
     console.log(`El socket ${socket.id} está conectado`)
