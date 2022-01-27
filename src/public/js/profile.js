@@ -1,0 +1,1 @@
+fetch('/auth/facebook/callback')

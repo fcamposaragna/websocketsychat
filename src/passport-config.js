@@ -11,18 +11,23 @@ const initializePassportConfig = ()=>{
         profileFields: ['emails', 'picture', 'displayName']
     }, async (accesToken, refreshToken, profile, done)=>{
         try{
-            let newUser={
-                nombre: profile.displayName,
-                email:profile.emails[0].value,
-                alias:profile.displayName,
-                avatar: profile._json.picture.data.url
+            let exists = await userService.getUser(profile.emails[0].value)
+            if(exists){
+                return done(null,exists.payload)   
+            }else{
+                let newUser = {
+                    nombre: profile.displayName,
+                    email:profile.emails[0].value,
+                    alias:profile.displayName,
+                    avatar: profile._json.picture.data.url
+                }
+                let create = await userService.saveUser(newUser);
+                console.log('Se creo un nuevo usuario '+create.payload)
+                return done(null, create.payload)
             }
-            await userService.saveUser(newUser).payload;
-            let user = await userService.getUser(newUser.email).payload
-            done(null, user)
         }
         catch(error){
-            done(error)
+            return done(error)
         }
     }))
 

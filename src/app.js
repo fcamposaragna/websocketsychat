@@ -11,6 +11,9 @@ import MessageService from './daos/Messages.js';
 import initializePassportConfig from './passport-config.js';
 import passport from 'passport';
 import { userService } from "./daos/index.js";
+import jwt from 'jsonwebtoken';
+import {key} from './keys.js'
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Message = new MessageService()
@@ -40,6 +43,17 @@ app.use(express.static(__dirname+'/public'))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
+
+const authMiddleware = (req,res, next)=>{
+    const authHeader = req.headers.authorization
+    if(!authHeader||authHeader==="null") return res.status(401).send({status:"error", error:"No autorizado"})
+    let token = authHeader;
+    jwt.verify(token, key, (rtt, decoded)=>{
+        req.user = decoded.user;
+        next()
+    })
+}
+
 
 //RUTAS
 app.get('/api/productos-test', (req, res)=>{
@@ -85,21 +99,41 @@ app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email']}),(r
 })
 
 app.get('/auth/facebook/callback', passport.authenticate('facebook',{
-    //session:true
+    failureRedirect: '/login'
 }),async (req,res)=>{
-    console.log(req.user+ 'En el callback ')
+    //console.log(req.user+ 'En el callback ')
     const user = await userService.getUser(req.user.email)
     req.session.user={
         email: user.payload.email,
         alias: user.payload.alias,
         avatar: user.payload.avatar
     }
-    console.log(req.session.user + 'En el req.session del callback')
+    //console.log(req.session.user + 'En el req.session del callback')
+// CON TOKEEEEEN
+
+    // const payload = {
+    //     email: user.payload.email,
+    //     alias: user.payload.alias,
+    //     avatar: user.payload.avatar
+    // }
+    // let token =jwt.sign(payload,key,{
+    //     expiresIn: '1h'
+    // })
+    // res.send({
+    //     message:'Logueado',
+    //     token:token
+    // })
+// CON COOOOOOKIES
+    // const payload = {
+    //     email: user.payload.email,
+    // //     alias: user.payload.alias,
+    // //     avatar: user.payload.avatar
+    // }
+    // res.cookie('cookieFb',payload)
     res.redirect('http://localhost:8080/profile')
 })
 app.get('/profile',(req,res)=>{
-    console.log(req.user + 'req.user en el /profile')
-    console.log(req.session.passport+'req.user.passport en el profile')
+    console.log(req.user)
     res.render('profile',req.user)
 })
 //SOCKET
