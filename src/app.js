@@ -99,7 +99,7 @@ app.get('/auth/facebook', passport.authenticate('facebook',{scope:['email']}),(r
 })
 
 app.get('/auth/facebook/callback', passport.authenticate('facebook',{
-    failureRedirect: '/login'
+    failureRedirect: '/error'
 }),async (req,res)=>{
     //console.log(req.user+ 'En el callback ')
     const user = await userService.getUser(req.user.email)
