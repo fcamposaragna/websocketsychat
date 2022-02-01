@@ -1,12 +1,14 @@
 import passport from "passport";
 import fbStrategy from 'passport-facebook';
 import { userService } from "./daos/index.js";
+import dotenv from 'dotenv'
 const FacebookStrategy = fbStrategy.Strategy;
+dotenv.config()
 
 const initializePassportConfig = ()=>{
     passport.use('facebook', new FacebookStrategy({
-        clientID: "4925718800799908",
-        clientSecret: "fe8d5c82a3b28e15399ee6dab94c2f1d",
+        clientID: process.env.CLIENTID,
+        clientSecret: process.env.CLIENTSECRET,
         callbackURL: "https://cd32-2803-9800-98c4-7a9b-c124-7edd-523a-101a.ngrok.io/auth/facebook/callback",
         profileFields: ['emails', 'picture', 'displayName']
     }, async (accesToken, refreshToken, profile, done)=>{

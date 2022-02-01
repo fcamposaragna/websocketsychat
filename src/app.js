@@ -3,7 +3,6 @@ import cors from 'cors'
 import {engine} from 'express-handlebars'
 import {Server} from 'socket.io'
 import __dirname from './utils.js';
-import { productsFaker } from './faker.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
@@ -12,8 +11,9 @@ import initializePassportConfig from './passport-config.js';
 import passport from 'passport';
 import { userService } from "./daos/index.js";
 import jwt from 'jsonwebtoken';
-import {key} from './keys.js'
+import dotenv from 'dotenv'
 
+dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 8080;
 const Message = new MessageService()
@@ -26,7 +26,7 @@ const baseSession = (session({
     store: MongoStore.create({mongoUrl:'mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/sessions?retryWrites=true&w=majority',ttl:1000}),
     resave:false,
     saveUninitialized:false,
-    secret:'ch4t',
+    secret: process.env.KEY,
 }))
 export const io = new Server(server)
 io.use(ios(baseSession))
@@ -44,22 +44,18 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
 
-const authMiddleware = (req,res, next)=>{
-    const authHeader = req.headers.authorization
-    if(!authHeader||authHeader==="null") return res.status(401).send({status:"error", error:"No autorizado"})
-    let token = authHeader;
-    jwt.verify(token, key, (rtt, decoded)=>{
-        req.user = decoded.user;
-        next()
-    })
-}
+// const authMiddleware = (req,res, next)=>{
+//     const authHeader = req.headers.authorization
+//     if(!authHeader||authHeader==="null") return res.status(401).send({status:"error", error:"No autorizado"})
+//     let token = authHeader;
+//     jwt.verify(token, key, (rtt, decoded)=>{
+//         req.user = decoded.user;
+//         next()
+//     })
+// }
 
 
 //RUTAS
-app.get('/api/productos-test', (req, res)=>{
-    res.render('productsRandom', productsFaker())
-})
-
 app.get('/currentUser',(req,res)=>{
     console.log(req)
     if(req.user!==undefined){
@@ -114,6 +110,18 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook',{
 app.get('/profile',(req,res)=>{
     console.log(req.user)
     res.render('profile',req.user)
+})
+app.get('/info', (req, res)=>{
+    let preparedObject ={
+        arguments: process.argv.slice(2),
+        system : process.platform,
+        version: process.version,
+        process: process.pid,
+        memory : JSON.stringify(process.memoryUsage()),
+        pathEjection: process.argv[1],
+        carp :process.cwd
+    }
+    res.render('info', preparedObject)
 })
 //SOCKET
 io.on('connection', async socket=>{
