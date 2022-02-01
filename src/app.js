@@ -12,6 +12,7 @@ import passport from 'passport';
 import { userService } from "./daos/index.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
+import apiRoutes from './routes/apiRoutes.js'
 
 dotenv.config()
 const app = express();
@@ -35,7 +36,7 @@ app.engine('handlebars', engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 app.use(baseSession);
-
+app.use('/api', apiRoutes)
 initializePassportConfig();
 app.use(passport.initialize());
 app.use(passport.session());
