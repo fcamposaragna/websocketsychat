@@ -7,18 +7,22 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
 import MessageService from './daos/Messages.js';
-import initializePassportConfig from './passport-config.js';
+import initializePassportConfig from './passport/passport-config.js';
 import passport from 'passport';
 import { userService } from "./daos/index.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
 import apiRoutes from './routes/apiRoutes.js'
+import minimist from 'minimist';
 
 dotenv.config()
 const app = express();
-const PORT = process.env.PORT || 8080;
+let minimizedArgs = minimist(process.argv.slice(2));
+let config={
+    port: minimizedArgs.p||8080
+}
+const PORT = config.port;
 const Message = new MessageService()
-
 
 const server = app.listen(PORT, ()=>{
     console.log(`Servidor escuchando en ${PORT}`)
