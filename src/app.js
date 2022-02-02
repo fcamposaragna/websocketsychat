@@ -18,7 +18,7 @@ import minimist from 'minimist';
 dotenv.config()
 const app = express();
 
-const PORT = process.argv[2];
+const PORT = process.argv[2] || 8080;
 const Message = new MessageService()
 
 const server = app.listen(PORT, ()=>{
