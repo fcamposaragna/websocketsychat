@@ -18,7 +18,7 @@ form.addEventListener('submit',function(event){
             return window.alert('Usuario o contraseña inválidos')
          }
          else{
-             location.replace('../pages/chat.html')
+             location.replace('/chat')
          }
     })
 })

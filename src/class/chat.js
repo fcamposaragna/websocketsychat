@@ -1,4 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+import log4js from '../log.js'
+const logger = log4js.getLogger();
 
 mongoose.connect("mongodb+srv://admin:123@ecommerce.5mljd.mongodb.net/chatbdd?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology:true})
 
@@ -13,6 +15,7 @@ export default class ContenedorChat {
             return {status:"success", payload:data}
         }
         catch(error){
+            logger.error(error)
             return {status:"error", message:"Hubo un error en el chat" + error}
         }
     }

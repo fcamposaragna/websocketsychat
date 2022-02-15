@@ -1,5 +1,7 @@
 import  Schema  from "mongoose";
 import ContenedorChat from "../class/chat.js";
+import log4js from "../log.js";
+const logger = log4js.getLogger();
 
 export default class MessageService extends ContenedorChat{
     constructor(){
@@ -21,6 +23,7 @@ export default class MessageService extends ContenedorChat{
             return{status:"success", payload:messages}
         }   
         catch(error){
+            logger.error(error)
             return {status:"error", message:"No se pudo enviar el mensaje" + error}
         }
     }
@@ -30,6 +33,7 @@ export default class MessageService extends ContenedorChat{
             return {status:"success", payload:data}
         }
         catch(error){
+            logger.error(error)
             return {status:"error", message:"Hubo un error al recuperar los mensajes" + error}
         }
     }

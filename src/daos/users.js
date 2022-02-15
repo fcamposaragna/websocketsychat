@@ -1,4 +1,6 @@
 import ContenedorChat from "../class/chat.js";
+import log4js from "../log.js";
+const logger = log4js.getLogger()
 
 export default class UserService extends ContenedorChat{
     constructor(){
@@ -20,6 +22,7 @@ export default class UserService extends ContenedorChat{
             return{status:"success", message:"Usuario creado"}
         }
         catch(error){
+            logger.error(error)
             return{status:"error", message:"Hubo un error con el registro" + error}
         }
     }
@@ -29,6 +32,7 @@ export default class UserService extends ContenedorChat{
             return {status:"success", payload:user}
         }
         catch(error){
+            logger.error(error)
             return {status:"error", message:"Hubo un error al obtener el usuario" + error}
         }
     }
@@ -38,6 +42,7 @@ export default class UserService extends ContenedorChat{
             return {status:"success", payload:data}
         }
         catch(error){
+            logger.error(error)
             return {status:"error", message:"no pudo recuperarse el ususario por id" + error}
         }
     }
