@@ -6,7 +6,7 @@ import __dirname from './utils.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import ios from 'socket.io-express-session';
-import MessageService from './daos/Messages.js';
+import MessageService from './daos/messages.js';
 import { userService } from "./daos/index.js";
 import jwt from 'jsonwebtoken';
 import apiRoutes from './routes/apiRoutes.js'
