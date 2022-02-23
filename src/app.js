@@ -16,7 +16,7 @@ import compression from 'compression';
 import log4js from './log.js';
 
 const app = express();
-const PORT = process.argv[2] || 8080;
+const PORT = process.env.PORT || 8080;
 const Message = new MessageService()
 
 const logger = log4js.getLogger()
